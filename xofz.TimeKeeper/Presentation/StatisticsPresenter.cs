@@ -27,14 +27,15 @@
                 return;
             }
 
+            var w = this.web;
             this.ui.DateChanged += this.ui_DateChanged;
             UiHelpers.Write(
                 this.ui, 
-                () => this.ui.StartDate = DateTime.Today.AddDays(-7));
+                () => this.ui.StartDate = w.Run<DateCalculator, DateTime>(
+                    calc => calc.StartOfWeek()));
             this.ui.WriteFinished.WaitOne();
             this.computeStatistics();
 
-            var w = this.web;
             w.Run<xofz.Framework.Timer>(
                 t =>
                 {
