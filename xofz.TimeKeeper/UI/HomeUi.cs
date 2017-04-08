@@ -3,7 +3,7 @@
     using System;
     using xofz.UI;
 
-    public interface HomeUi : Ui
+    public interface HomeUi : ShellUi
     {
         event Action InKeyTapped;
 

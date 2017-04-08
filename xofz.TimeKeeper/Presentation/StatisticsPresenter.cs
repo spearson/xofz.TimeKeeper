@@ -1,0 +1,75 @@
+﻿namespace xofz.TimeKeeper.Presentation
+{
+    using System;
+    using System.Threading;
+    using xofz.Framework;
+    using xofz.Presentation;
+    using xofz.TimeKeeper.Framework;
+    using xofz.TimeKeeper.UI;
+    using xofz.UI;
+
+    public sealed class StatisticsPresenter : Presenter
+    {
+        public StatisticsPresenter(
+            StatisticsUi ui, 
+            ShellUi shell,
+            MethodWeb web) 
+            : base(ui, shell)
+        {
+            this.ui = ui;
+            this.web = web;
+        }
+
+        public void Setup()
+        {
+            if (Interlocked.CompareExchange(ref this.setupIf1, 1, 0) == 1)
+            {
+                return;
+            }
+
+            this.ui.DateChanged += this.ui_DateChanged;
+            UiHelpers.Write(
+                this.ui, 
+                () => this.ui.StartDate = DateTime.Today.AddDays(-7));
+            this.ui.WriteFinished.WaitOne();
+            this.computeStatistics();
+
+            var w = this.web;
+            w.Run<xofz.Framework.Timer>(
+                t =>
+                {
+                    t.Elapsed += this.timer_Elapsed;
+                    t.Start(1000);
+                },
+                "StatisticsTimer");
+
+            w.Run<Navigator>(n => n.RegisterPresenter(this));
+        }
+
+        private void ui_DateChanged()
+        {
+            this.computeStatistics();
+        }
+
+        private void timer_Elapsed()
+        {
+            this.computeStatistics();
+        }
+
+        private void computeStatistics()
+        {
+            var startDate = UiHelpers.Read(this.ui, () => this.ui.StartDate);
+            var endDate = UiHelpers.Read(this.ui, () => this.ui.EndDate).AddDays(1);
+            var w = this.web;
+            var timeWorked = w.Run<StatisticsCalculator, TimeSpan>(
+                calc => calc.TimeWorked(startDate, endDate));
+            var readableString = w.Run<TimeSpanViewer, string>(
+                viewer => viewer.ReadableString(timeWorked));
+            UiHelpers.Write(this.ui, () => this.ui.TimeWorked = readableString);
+        }
+
+        private int setupIf1;
+        private readonly StatisticsUi ui;
+        private readonly MethodWeb web;
+    }
+}

@@ -46,13 +46,16 @@
   <ItemGroup>
     <Compile Include="Framework\DateCalculator.cs" />
     <Compile Include="Framework\StatisticsCalculator.cs" />
+    <Compile Include="Framework\TimeSpanViewer.cs" />
     <Compile Include="Framework\TimestampManager.cs" />
     <Compile Include="Framework\TimestampReader.cs" />
     <Compile Include="Framework\TimestampWriter.cs" />
     <Compile Include="Presentation\HomeNavPresenter.cs" />
     <Compile Include="Presentation\HomePresenter.cs" />
+    <Compile Include="Presentation\StatisticsPresenter.cs" />
     <Compile Include="Root\Commands\SetupHomeCommand.cs" />
     <Compile Include="Root\Commands\SetupMethodWebCommand.cs" />
+    <Compile Include="Root\Commands\SetupStatisticsCommand.cs" />
     <Compile Include="Root\FormsBootstrapper.cs" />
     <Compile Include="UI\Forms\FormMainUi.cs">
       <SubType>Form</SubType>
@@ -80,8 +83,15 @@
     <Compile Include="UI\Forms\UserControlNavUi.Designer.cs">
       <DependentUpon>UserControlNavUi.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Forms\UserControlStatisticsUi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\UserControlStatisticsUi.Designer.cs">
+      <DependentUpon>UserControlStatisticsUi.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\HomeNavUi.cs" />
     <Compile Include="UI\HomeUi.cs" />
+    <Compile Include="UI\StatisticsUi.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -103,6 +113,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\UserControlNavUi.resx">
       <DependentUpon>UserControlNavUi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\UserControlStatisticsUi.resx">
+      <DependentUpon>UserControlStatisticsUi.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -33,6 +33,7 @@
             this.outKey = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.timeThisWeekLabel = new System.Windows.Forms.Label();
+            this.screenPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // label1
@@ -81,25 +82,33 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(3, 154);
+            this.label2.Location = new System.Drawing.Point(497, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(399, 37);
+            this.label2.Size = new System.Drawing.Size(187, 37);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Time Worked This Week:";
+            this.label2.Text = "This Week:";
             // 
             // timeThisWeekLabel
             // 
             this.timeThisWeekLabel.AutoSize = true;
-            this.timeThisWeekLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.timeThisWeekLabel.Location = new System.Drawing.Point(7, 191);
+            this.timeThisWeekLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.timeThisWeekLabel.Location = new System.Drawing.Point(497, 37);
             this.timeThisWeekLabel.Name = "timeThisWeekLabel";
-            this.timeThisWeekLabel.Size = new System.Drawing.Size(66, 55);
+            this.timeThisWeekLabel.Size = new System.Drawing.Size(215, 37);
             this.timeThisWeekLabel.TabIndex = 4;
-            this.timeThisWeekLabel.Text = "   ";
+            this.timeThisWeekLabel.Text = "00h 00m 00s";
+            // 
+            // screenPanel
+            // 
+            this.screenPanel.Location = new System.Drawing.Point(0, 113);
+            this.screenPanel.Name = "screenPanel";
+            this.screenPanel.Size = new System.Drawing.Size(784, 298);
+            this.screenPanel.TabIndex = 5;
             // 
             // UserControlHomeUi
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.screenPanel);
             this.Controls.Add(this.timeThisWeekLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.outKey);
@@ -120,5 +129,6 @@
         private System.Windows.Forms.Button outKey;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label timeThisWeekLabel;
+        private System.Windows.Forms.Panel screenPanel;
     }
 }

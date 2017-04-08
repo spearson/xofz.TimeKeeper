@@ -23,10 +23,10 @@
             var beginning = w.Run<DateCalculator, DateTime>(
                 calc => calc.StartOfWeek());
 
-            return this.TimeWorked(beginning);
+            return this.TimeWorked(beginning, DateTime.Today.AddDays(1));
         }
 
-        public virtual TimeSpan TimeWorked(DateTime beginning)
+        public virtual TimeSpan TimeWorked(DateTime beginning, DateTime end)
         {
             var allTimes = this.allTimes();
             var now = DateTime.Now;
@@ -38,10 +38,15 @@
                     continue;
                 }
 
+                if (allTimes[i + 1] > end)
+                {
+                    break;
+                }
+
                 timeWorked += allTimes[i + 1] - allTimes[i];
             }
 
-            if (allTimes.Count % 2 == 1)
+            if (allTimes.Count % 2 == 1 && end > DateTime.Today)
             {
                 timeWorked += now - allTimes[allTimes.Count - 1];
             }

@@ -87,20 +87,13 @@
             var w = this.web;
             var timeThisWeek = w.Run<StatisticsCalculator, TimeSpan>(
                 calc => calc.TimeWorkedThisWeek());
-            var readableString = this.formatTimeSpan(timeThisWeek);
+            var readableString = w.Run<TimeSpanViewer, string>(
+                viewer => viewer.ReadableString(timeThisWeek));
 
             UiHelpers.Write(
                 this.ui, 
                 () => this.ui.TimeWorkedThisWeek = readableString);
             this.ui.WriteFinished.WaitOne();
-        }
-
-        private string formatTimeSpan(TimeSpan timeSpan)
-        {
-            return timeSpan.Days + "d "
-                   + timeSpan.Hours + "h "
-                   + timeSpan.Minutes + "m "
-                   + timeSpan.Seconds + "s";
         }
 
         private int setupIf1;

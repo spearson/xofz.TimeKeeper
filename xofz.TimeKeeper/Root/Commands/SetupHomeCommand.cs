@@ -1,6 +1,8 @@
 ﻿namespace xofz.TimeKeeper.Root.Commands
 {
+    using System;
     using xofz.Framework;
+    using xofz.Framework.Transformation;
     using xofz.Root;
     using xofz.TimeKeeper.Framework;
     using xofz.TimeKeeper.Presentation;
@@ -45,10 +47,13 @@
         {
             var w = this.web;
             w.RegisterDependency(
-                new TimestampManager());
+                new TimestampManager(
+                    new EnumerableTrapper<DateTime>()));
             w.RegisterDependency(
                 new xofz.Framework.Timer(),
                 "HomeTimer");
+            w.RegisterDependency(
+                new TimeSpanViewer());
             w.RegisterDependency(
                 new StatisticsCalculator(w));
         }

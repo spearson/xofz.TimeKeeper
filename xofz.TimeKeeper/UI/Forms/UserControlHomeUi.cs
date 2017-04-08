@@ -2,6 +2,8 @@
 {
     using System;
     using System.Threading;
+    using System.Windows.Forms;
+    using xofz.UI;
     using xofz.UI.Forms;
 
     public partial class UserControlHomeUi : UserControlUi, HomeUi
@@ -27,6 +29,12 @@
             get => this.outKey.Visible;
 
             set => this.outKey.Visible = value;
+        }
+
+        void ShellUi.SwitchUi(Ui newUi)
+        {
+            var control = newUi as Control;
+            control.SafeReplace(this.screenPanel);
         }
 
         string HomeUi.TimeWorkedThisWeek

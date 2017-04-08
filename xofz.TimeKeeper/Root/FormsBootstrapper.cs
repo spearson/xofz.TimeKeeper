@@ -41,12 +41,17 @@
                 fm));
 
             var w = e.Get<SetupMethodWebCommand>().Web;
+            var homeUi = new UserControlHomeUi();
             e
                 .Execute(new SetupHomeCommand(
-                    new UserControlHomeUi(),
+                    homeUi,
                     new UserControlHomeNavUi(),
                     mf,
                     mf.NavUi,
+                    w))
+                .Execute(new SetupStatisticsCommand(
+                    new UserControlStatisticsUi(), 
+                    homeUi,
                     w))
                 .Execute(new SetupMainCommand(
                     mf,
@@ -60,6 +65,7 @@
                 {
                     n.Present<HomePresenter>();
                     n.PresentFluidly<HomeNavPresenter>();
+                    n.PresentFluidly<StatisticsPresenter>();
                 });
         }
 

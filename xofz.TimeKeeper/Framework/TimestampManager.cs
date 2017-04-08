@@ -3,9 +3,45 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
+    using xofz.Framework.Transformation;
 
     public sealed class TimestampManager : TimestampReader, TimestampWriter, DateCalculator
     {
+        public TimestampManager(EnumerableTrapper<DateTime> trapper)
+        {
+            this.trapper = trapper;
+        }
+
+        public IEnumerable<DateTime> Read()
+        {
+            if (Interlocked.CompareExchange(ref this.firstReadIf0, 1, 0) == 0)
+            {
+                return this.trapper.Trap(this.readInternal());
+            }
+
+            if (Interlocked.CompareExchange(ref this.needToTrapIf1, 0, 1) == 1)
+            {
+                return this.trapper.Trap(this.readInternal());
+            }
+
+            return this.trapper.TrappedCollection;
+        }
+
+        private IEnumerable<DateTime> readInternal()
+        {
+            var ll = new LinkedList<DateTime>();
+            foreach (var filePath in Directory.GetFiles("Data"))
+            {
+                foreach (var tickCount in File.ReadAllLines(filePath))
+                {
+                    ll.AddLast(new DateTime(long.Parse(tickCount)));
+                }
+            }
+
+            return ll;
+        }
+
         void TimestampWriter.Write()
         {
             var mainDirectory = "Data";
@@ -28,17 +64,7 @@
 
             times.Add(now.Ticks.ToString());
             File.WriteAllLines(filePath, times);
-        }
-
-        IEnumerable<DateTime> TimestampReader.Read()
-        {
-            foreach (var filePath in Directory.GetFiles("Data"))
-            {
-                foreach (var tickCount in File.ReadAllLines(filePath))
-                {
-                    yield return new DateTime(long.Parse(tickCount));
-                }
-            }
+            Interlocked.CompareExchange(ref this.needToTrapIf1, 1, 0);
         }
 
         public DateTime StartOfWeek()
@@ -75,5 +101,9 @@
 
             return now.Date.AddDays(-daysToSubtract);
         }
+
+        private int firstReadIf0;
+        private int needToTrapIf1;
+        private readonly EnumerableTrapper<DateTime> trapper;
     }
 }

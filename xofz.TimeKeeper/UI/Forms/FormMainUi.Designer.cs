@@ -54,6 +54,7 @@
             this.ClientSize = new System.Drawing.Size(784, 461);
             this.Controls.Add(this.screenPanel);
             this.Controls.Add(this.navUi);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormMainUi";
             this.Text = "TimeKeeper by X of Z";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.this_FormClosing);
