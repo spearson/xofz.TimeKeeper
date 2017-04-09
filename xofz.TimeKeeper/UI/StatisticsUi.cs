@@ -12,5 +12,7 @@
         DateTime EndDate { get; set; }
 
         string TimeWorked { get; set; }
+
+        string AvgDailyTimeWorked { get; set; }
     }
 }

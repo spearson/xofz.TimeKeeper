@@ -33,6 +33,13 @@
             set => this.timeWorkedLabel.Text = value;
         }
 
+        string StatisticsUi.AvgDailyTimeWorked
+        {
+            get => this.avgDailyLabel.Text;
+
+            set => this.avgDailyLabel.Text = value;
+        }
+
         private void startDatePicker_DateChanged(object sender, DateRangeEventArgs e)
         {
             new Thread(() => this.DateChanged?.Invoke()).Start();

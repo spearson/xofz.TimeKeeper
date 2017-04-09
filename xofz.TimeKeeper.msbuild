@@ -1,0 +1,51 @@
+<Project DefaultTargets="ChangeVersion;Build;Deploy" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+
+
+  <PropertyGroup>
+    <Version>$(BUILD_NUMBER)</Version>
+    <ProjectName>xofz.TimeKeeper</ProjectName>
+    <BuildDir>$(ProjectName)\bin\Release</BuildDir>
+    <DeployFolder>C:\Dropbox\xofz.Apps\TimeKeeper\$(ProjectName)-$(Version)</DeployFolder>
+  </PropertyGroup>
+
+
+  <Target Name="ChangeVersion">
+    <AssemblyInfo
+      CodeLanguage="CS" 
+      OutputFile="$(ProjectName)\Properties\AssemblyInfo.cs"
+      AssemblyTitle="$(ProjectName)" 
+      AssemblyDescription="This app lets you view the time you worked simply by clocking in and out"
+      AssemblyConfiguration=""
+      AssemblyCompany="X of Z"
+      AssemblyProduct="TimeKeeper by X of Z"
+      AssemblyCopyright="Copyright (c) Sam Pearson"
+      AssemblyTrademark=""
+      ComVisible="false"
+      Guid="2d54ac5c-c76a-4892-8756-a746445024cd"
+      AssemblyVersion="$(Version)"
+      AssemblyFileVersion="$(Version)" />
+  </Target>
+
+
+  <Target Name="Build" DependsOnTargets="ChangeVersion">
+    <RemoveDir Directories="$(BuildDir)" />
+    <MSBuild Projects="$(ProjectName).sln" Targets="Build" Properties="Configuration=Release;Platform=Any CPU" />
+  </Target>
+  
+  <UsingTask AssemblyFile="C:\Dropbox\Libraries\xUnit\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
+  <Target Name="Test" DependsOnTargets="Build">
+    <xunit Assemblies="$(ProjectName).Tests\bin\Release\$(ProjectName).Tests.dll" />
+  </Target>
+
+  <Target Name="Deploy" DependsOnTargets="Build">
+    <MakeDir Directories="$(DeployFolder)" Condition="!Exists('$(DeployFolder)')"/>
+    <ItemGroup>
+      <FilesToMove Include="$(BuildDir)\$(ProjectName).exe" />
+      <FilesToMove Include="$(BuildDir)\$(ProjectName).exe.config" />
+    </ItemGroup>
+    <MV SourceFiles="@(FilesToMove)" DestinationFolder="$(DeployFolder)" />
+  </Target>
+</Project>

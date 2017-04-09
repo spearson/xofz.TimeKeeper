@@ -35,6 +35,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.timeWorkedLabel = new System.Windows.Forms.Label();
+            this.avgDailyLabel = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label4
@@ -90,6 +92,7 @@
             this.label2.Size = new System.Drawing.Size(102, 20);
             this.label2.TabIndex = 9;
             this.label2.Text = "Time worked:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // timeWorkedLabel
             // 
@@ -100,10 +103,31 @@
             this.timeWorkedLabel.Size = new System.Drawing.Size(0, 25);
             this.timeWorkedLabel.TabIndex = 10;
             // 
+            // avgDailyLabel
+            // 
+            this.avgDailyLabel.AutoSize = true;
+            this.avgDailyLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.avgDailyLabel.Location = new System.Drawing.Point(584, 73);
+            this.avgDailyLabel.Name = "avgDailyLabel";
+            this.avgDailyLabel.Size = new System.Drawing.Size(0, 25);
+            this.avgDailyLabel.TabIndex = 12;
+            // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(469, 65);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(109, 45);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Average daily time worked:";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // UserControlStatisticsUi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.avgDailyLabel);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.timeWorkedLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -127,5 +151,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label timeWorkedLabel;
+        private System.Windows.Forms.Label avgDailyLabel;
+        private System.Windows.Forms.Label label6;
     }
 }

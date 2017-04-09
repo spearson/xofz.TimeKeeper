@@ -54,6 +54,14 @@
             return timeWorked;
         }
 
+        public virtual TimeSpan AverageDailyTimeWorked(DateTime beginning, DateTime end)
+        {
+            var totalTimeWorked = this.TimeWorked(beginning, end);
+            var numberOfDays = (end - beginning).Days;
+
+            return new TimeSpan(totalTimeWorked.Ticks / numberOfDays);
+        }
+
         private IList<DateTime> allTimes()
         {
             var w = this.web;

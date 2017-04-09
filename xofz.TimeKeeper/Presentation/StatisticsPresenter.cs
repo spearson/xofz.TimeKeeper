@@ -66,7 +66,18 @@
                 calc => calc.TimeWorked(startDate, endDate));
             var readableString = w.Run<TimeSpanViewer, string>(
                 viewer => viewer.ReadableString(timeWorked));
+            // ReSharper disable once AccessToModifiedClosure
+            // because we are waiting on the UI write to finish,
+            // this variable will not be overwritten by its second assignment
+            // until it is ready
             UiHelpers.Write(this.ui, () => this.ui.TimeWorked = readableString);
+            this.ui.WriteFinished.WaitOne();
+            var avgDaily = w.Run<StatisticsCalculator, TimeSpan>(
+                calc => calc.AverageDailyTimeWorked(startDate, endDate));
+            readableString = w.Run<TimeSpanViewer, string>(
+                viewer => viewer.ReadableString(avgDaily));
+            UiHelpers.Write(this.ui, () => this.ui.AvgDailyTimeWorked = readableString);
+
         }
 
         private int setupIf1;
