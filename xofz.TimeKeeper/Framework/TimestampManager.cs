@@ -11,6 +11,7 @@
         public TimestampManager(EnumerableTrapper<DateTime> trapper)
         {
             this.trapper = trapper;
+            this.mainDirectory = "Data";
         }
 
         public IEnumerable<DateTime> Read()
@@ -31,7 +32,13 @@
         private IEnumerable<DateTime> readInternal()
         {
             var ll = new LinkedList<DateTime>();
-            foreach (var filePath in Directory.GetFiles("Data"))
+            var md = this.mainDirectory;
+            if (!Directory.Exists(md))
+            {
+                Directory.CreateDirectory(this.mainDirectory);
+            }
+
+            foreach (var filePath in Directory.GetFiles(md))
             {
                 foreach (var tickCount in File.ReadAllLines(filePath))
                 {
@@ -44,10 +51,10 @@
 
         void TimestampWriter.Write()
         {
-            var mainDirectory = "Data";
-            if (!Directory.Exists(mainDirectory))
+            var md = this.mainDirectory;
+            if (!Directory.Exists(md))
             {
-                Directory.CreateDirectory(mainDirectory);
+                Directory.CreateDirectory(md);
             }
 
             var now = DateTime.Now;
@@ -56,7 +63,7 @@
                            + startOfWeek.Month.ToString().PadLeft(2, '0')
                            + startOfWeek.Day.ToString().PadLeft(2, '0');
             var times = new List<string>();
-            var filePath = mainDirectory + @"\" + fileName;
+            var filePath = md + @"\" + fileName;
             if (File.Exists(filePath))
             {
                 times.AddRange(File.ReadAllLines(filePath));
@@ -106,5 +113,6 @@
         private int firstReadIf0;
         private int needToTrapIf1;
         private readonly EnumerableTrapper<DateTime> trapper;
+        private readonly string mainDirectory;
     }
 }
