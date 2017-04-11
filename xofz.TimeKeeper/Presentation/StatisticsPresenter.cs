@@ -29,12 +29,13 @@
 
             var w = this.web;
             this.ui.DateChanged += this.ui_DateChanged;
+            var startOfWeek = w.Run<DateCalculator, DateTime>(
+                calc => calc.StartOfWeek());
             UiHelpers.Write(
                 this.ui, 
-                () => this.ui.StartDate = w.Run<DateCalculator, DateTime>(
-                    calc => calc.StartOfWeek()));
+                () => this.ui.StartDate = startOfWeek);
             this.ui.WriteFinished.WaitOne();
-            this.computeStatistics();
+            this.timer_Elapsed();
 
             w.Run<xofz.Framework.Timer>(
                 t =>
@@ -54,6 +55,23 @@
 
         private void timer_Elapsed()
         {
+            var today = DateTime.Now.Date;
+            if (Interlocked.CompareExchange(ref this.firstTick, 1, 0) == 0)
+            {
+                this.currentDate = today;
+            }
+
+            var endDate = UiHelpers.Read(
+                this.ui, 
+                () => this.ui.EndDate);
+            if (today == endDate.AddDays(1))
+            {
+                UiHelpers.Write(
+                    this.ui, 
+                    () => this.ui.EndDate = today);
+                this.currentDate = today;
+            }
+
             this.computeStatistics();
         }
 
@@ -77,10 +95,11 @@
             readableString = w.Run<TimeSpanViewer, string>(
                 viewer => viewer.ReadableString(avgDaily));
             UiHelpers.Write(this.ui, () => this.ui.AvgDailyTimeWorked = readableString);
-
+            this.ui.WriteFinished.WaitOne();
         }
 
-        private int setupIf1;
+        private int setupIf1, firstTick;
+        private DateTime currentDate;
         private readonly StatisticsUi ui;
         private readonly MethodWeb web;
     }
