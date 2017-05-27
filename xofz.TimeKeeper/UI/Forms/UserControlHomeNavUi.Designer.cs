@@ -84,6 +84,7 @@
             this.statisticsKey.TabIndex = 0;
             this.statisticsKey.Text = "Statistics";
             this.statisticsKey.UseVisualStyleBackColor = true;
+            this.statisticsKey.Visible = false;
             this.statisticsKey.Click += new System.EventHandler(this.statisticsKey_Click);
             // 
             // UserControlHomeNavUi

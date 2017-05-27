@@ -62,6 +62,61 @@
             return new TimeSpan(totalTimeWorked.Ticks / numberOfDays);
         }
 
+        public virtual TimeSpan MinDailyTimeWorked(DateTime beginning, DateTime end)
+        {
+            if (beginning > end)
+            {
+                return TimeSpan.Zero;
+            }
+
+            var minTimeWorked = TimeSpan.MaxValue;
+            var currentDay = beginning;
+            while (currentDay <= end)
+            {
+                var timeWorked = this.TimeWorked(
+                    currentDay, 
+                    currentDay.AddDays(1));
+                if (timeWorked > TimeSpan.Zero && timeWorked < minTimeWorked)
+                {
+                    minTimeWorked = timeWorked;
+                }
+
+                currentDay = currentDay.AddDays(1);
+            }
+
+            if (minTimeWorked == TimeSpan.MaxValue)
+            {
+                return TimeSpan.Zero;
+            }
+
+            return minTimeWorked;
+        }
+
+        public virtual TimeSpan MaxDailyTimeWorked(DateTime beginning, DateTime end)
+        {
+            if (beginning > end)
+            {
+                return TimeSpan.Zero;
+            }
+
+            var maxTimeWorked = TimeSpan.Zero;
+            var currentDay = beginning;
+            while (currentDay <= end)
+            {
+                var timeWorked = this.TimeWorked(
+                    currentDay,
+                    currentDay.AddDays(1));
+                if (timeWorked > maxTimeWorked)
+                {
+                    maxTimeWorked = timeWorked;
+                }
+
+                currentDay = currentDay.AddDays(1);
+            }
+
+            return maxTimeWorked;
+        }
+
         private IList<DateTime> allTimes()
         {
             var w = this.web;

@@ -4,29 +4,36 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Threading;
+    using xofz.Framework;
     using xofz.Framework.Transformation;
 
-    public sealed class TimestampManager : TimestampReader, TimestampWriter, DateCalculator
+    public sealed class TimestampManager : TimestampReader, TimestampWriter
     {
-        public TimestampManager(EnumerableTrapper<DateTime> trapper)
+        public TimestampManager(MethodWeb web)
         {
-            this.trapper = trapper;
+            this.web = web;
             this.mainDirectory = "Data";
         }
 
         public IEnumerable<DateTime> Read()
         {
+            var w = this.web;
+
             if (Interlocked.CompareExchange(ref this.firstReadIf0, 1, 0) == 0)
             {
-                return this.trapper.Trap(this.readInternal());
+                return w.Run<EnumerableTrapper<DateTime>, IEnumerable<DateTime>>(
+                    trapper => trapper.Trap(this.readInternal()));
             }
 
             if (Interlocked.CompareExchange(ref this.needToTrapIf1, 0, 1) == 1)
             {
-                return this.trapper.Trap(this.readInternal());
+                return w.Run<EnumerableTrapper<DateTime>, IEnumerable<DateTime>>(
+                    trapper => trapper.Trap(this.readInternal()));
             }
 
-            return this.trapper.TrappedCollection;
+            return w.Run<EnumerableTrapper<DateTime>,
+                MaterializedEnumerable<DateTime>>(
+                trapper => trapper.TrappedCollection);
         }
 
         private IEnumerable<DateTime> readInternal()
@@ -35,7 +42,7 @@
             var md = this.mainDirectory;
             if (!Directory.Exists(md))
             {
-                Directory.CreateDirectory(this.mainDirectory);
+                Directory.CreateDirectory(md);
             }
 
             foreach (var filePath in Directory.GetFiles(md))
@@ -57,8 +64,10 @@
                 Directory.CreateDirectory(md);
             }
 
+            var w = this.web;
             var now = DateTime.Now;
-            var startOfWeek = this.StartOfWeek();
+            var startOfWeek = w.Run<DateCalculator, DateTime>(
+                calc => calc.StartOfWeek());
             var fileName = startOfWeek.Year
                            + startOfWeek.Month.ToString().PadLeft(2, '0')
                            + startOfWeek.Day.ToString().PadLeft(2, '0');
@@ -74,45 +83,9 @@
             Interlocked.CompareExchange(ref this.needToTrapIf1, 1, 0);
         }
 
-        public DateTime StartOfWeek()
-        {
-            var now = DateTime.Now;
-            int daysToSubtract;
-            switch (now.DayOfWeek)
-            {
-                case DayOfWeek.Monday:
-                    daysToSubtract = 0;
-                    break;
-                case DayOfWeek.Tuesday:
-                    daysToSubtract = 1;
-                    break;
-                case DayOfWeek.Wednesday:
-                    daysToSubtract = 2;
-                    break;
-                case DayOfWeek.Thursday:
-                    daysToSubtract = 3;
-                    break;
-                case DayOfWeek.Friday:
-                    daysToSubtract = 4;
-                    break;
-                case DayOfWeek.Saturday:
-                    daysToSubtract = 5;
-                    break;
-                case DayOfWeek.Sunday:
-                    daysToSubtract = 6;
-                    break;
-                default: // switch statements shouldn't need a default case if 
-                         //all the enum's values have been covered
-                    daysToSubtract = 0;
-                    break;
-            }
-
-            return now.Date.AddDays(-daysToSubtract);
-        }
-
         private int firstReadIf0;
         private int needToTrapIf1;
-        private readonly EnumerableTrapper<DateTime> trapper;
+        private readonly MethodWeb web;
         private readonly string mainDirectory;
     }
 }

@@ -47,8 +47,12 @@
         {
             var w = this.web;
             w.RegisterDependency(
+                new DateCalculator());
+            w.RegisterDependency(
+                new EnumerableTrapper<DateTime>());
+            w.RegisterDependency(
                 new TimestampManager(
-                    new EnumerableTrapper<DateTime>()));
+                    w));
             w.RegisterDependency(
                 new xofz.Framework.Timer(),
                 "HomeTimer");

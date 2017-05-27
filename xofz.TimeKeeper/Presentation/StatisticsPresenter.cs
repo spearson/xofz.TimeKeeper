@@ -29,12 +29,22 @@
 
             var w = this.web;
             this.ui.DateChanged += this.ui_DateChanged;
+            this.ui.PreviousWeekKeyTapped += this.ui_PreviousWeekKeyTapped;
+            this.ui.CurrentWeekKeyTapped += this.ui_CurrentWeekKeyTapped;
+            this.ui.NextWeekKeyTapped += this.ui_NextWeekKeyTapped;
             var startOfWeek = w.Run<DateCalculator, DateTime>(
                 calc => calc.StartOfWeek());
+            var friday = w.Run<DateCalculator, DateTime>(
+                calc => calc.Friday());
             UiHelpers.Write(
-                this.ui, 
-                () => this.ui.StartDate = startOfWeek);
+                this.ui,
+                () =>
+                {
+                    this.ui.StartDate = startOfWeek;
+                    this.ui.EndDate = friday;
+                });
             this.ui.WriteFinished.WaitOne();
+
             this.timer_Elapsed();
 
             w.Run<xofz.Framework.Timer>(
@@ -48,6 +58,59 @@
             w.Run<Navigator>(n => n.RegisterPresenter(this));
         }
 
+        private void ui_PreviousWeekKeyTapped()
+        {
+            var currentStart = UiHelpers.Read(
+                this.ui,
+                () => this.ui.StartDate);
+            var currentEnd = UiHelpers.Read(
+                this.ui,
+                () => this.ui.EndDate);
+            var newStart = currentStart.AddDays(-7);
+            var newEnd = currentEnd.AddDays(-7);
+
+            UiHelpers.Write(this.ui, () =>
+            {
+                this.ui.StartDate = newStart;
+                this.ui.EndDate = newEnd;
+            });
+        }
+
+        private void ui_CurrentWeekKeyTapped()
+        {
+            var w = this.web;
+            var start = w.Run<DateCalculator, DateTime>(
+                calc => calc.StartOfWeek());
+            var end = w.Run<DateCalculator, DateTime>(
+                calc => calc.Friday());
+
+            UiHelpers.Write(
+                this.ui,
+                () =>
+                {
+                    this.ui.StartDate = start;
+                    this.ui.EndDate = end;
+                });
+        }
+
+        private void ui_NextWeekKeyTapped()
+        {
+            var currentStart = UiHelpers.Read(
+                this.ui,
+                () => this.ui.StartDate);
+            var currentEnd = UiHelpers.Read(
+                this.ui,
+                () => this.ui.EndDate);
+            var newStart = currentStart.AddDays(7);
+            var newEnd = currentEnd.AddDays(7);
+
+            UiHelpers.Write(this.ui, () =>
+            {
+                this.ui.StartDate = newStart;
+                this.ui.EndDate = newEnd;
+            });
+        }
+
         private void ui_DateChanged()
         {
             this.computeStatistics();
@@ -55,23 +118,6 @@
 
         private void timer_Elapsed()
         {
-            var today = DateTime.Now.Date;
-            if (Interlocked.CompareExchange(ref this.firstTick, 1, 0) == 0)
-            {
-                this.currentDate = today;
-            }
-
-            var endDate = UiHelpers.Read(
-                this.ui, 
-                () => this.ui.EndDate);
-            if (today == endDate.AddDays(1))
-            {
-                UiHelpers.Write(
-                    this.ui, 
-                    () => this.ui.EndDate = today);
-                this.currentDate = today;
-            }
-
             this.computeStatistics();
         }
 
@@ -80,6 +126,7 @@
             var startDate = UiHelpers.Read(this.ui, () => this.ui.StartDate);
             var endDate = UiHelpers.Read(this.ui, () => this.ui.EndDate).AddDays(1);
             var w = this.web;
+
             var timeWorked = w.Run<StatisticsCalculator, TimeSpan>(
                 calc => calc.TimeWorked(startDate, endDate));
             var readableString = w.Run<TimeSpanViewer, string>(
@@ -90,16 +137,39 @@
             // until it is ready
             UiHelpers.Write(this.ui, () => this.ui.TimeWorked = readableString);
             this.ui.WriteFinished.WaitOne();
+
             var avgDaily = w.Run<StatisticsCalculator, TimeSpan>(
                 calc => calc.AverageDailyTimeWorked(startDate, endDate));
             readableString = w.Run<TimeSpanViewer, string>(
                 viewer => viewer.ReadableString(avgDaily));
-            UiHelpers.Write(this.ui, () => this.ui.AvgDailyTimeWorked = readableString);
+            // ReSharper disable once AccessToModifiedClosure
+            UiHelpers.Write(
+                this.ui, 
+                () => this.ui.AvgDailyTimeWorked = readableString);
+            this.ui.WriteFinished.WaitOne();
+
+            var minDaily = w.Run<StatisticsCalculator, TimeSpan>(
+                calc => calc.MinDailyTimeWorked(startDate, endDate));
+            readableString = w.Run<TimeSpanViewer, string>(
+                viewer => viewer.ReadableString(minDaily));
+            // ReSharper disable once AccessToModifiedClosure
+            UiHelpers.Write(
+                this.ui, 
+                () => this.ui.MinDailyTimeWorked = readableString);
+            this.ui.WriteFinished.WaitOne();
+
+            var maxDaily = w.Run<StatisticsCalculator, TimeSpan>(
+                calc => calc.MaxDailyTimeWorked(startDate, endDate));
+            readableString = w.Run<TimeSpanViewer, string>(
+                viewer => viewer.ReadableString(maxDaily));
+            // ReSharper disable once AccessToModifiedClosure
+            UiHelpers.Write(
+                this.ui,
+                () => this.ui.MaxDailyTimeWorked = readableString);
             this.ui.WriteFinished.WaitOne();
         }
 
-        private int setupIf1, firstTick;
-        private DateTime currentDate;
+        private int setupIf1;
         private readonly StatisticsUi ui;
         private readonly MethodWeb web;
     }
