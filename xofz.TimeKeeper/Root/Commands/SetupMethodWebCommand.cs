@@ -32,7 +32,7 @@
             w.RegisterDependency(
                 this.messenger);
             w.RegisterDependency(
-                new Navigator());
+                new Navigator(w));
             w.RegisterDependency(
                 new EventRaiser());
         }

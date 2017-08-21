@@ -11,9 +11,9 @@
     public sealed class StatisticsPresenter : Presenter
     {
         public StatisticsPresenter(
-            StatisticsUi ui, 
+            StatisticsUi ui,
             ShellUi shell,
-            MethodWeb web) 
+            MethodWeb web)
             : base(ui, shell)
         {
             this.ui = ui;
@@ -144,7 +144,7 @@
                 viewer => viewer.ReadableString(avgDaily));
             // ReSharper disable once AccessToModifiedClosure
             UiHelpers.Write(
-                this.ui, 
+                this.ui,
                 () => this.ui.AvgDailyTimeWorked = readableString);
             this.ui.WriteFinished.WaitOne();
 
@@ -154,7 +154,7 @@
                 viewer => viewer.ReadableString(minDaily));
             // ReSharper disable once AccessToModifiedClosure
             UiHelpers.Write(
-                this.ui, 
+                this.ui,
                 () => this.ui.MinDailyTimeWorked = readableString);
             this.ui.WriteFinished.WaitOne();
 

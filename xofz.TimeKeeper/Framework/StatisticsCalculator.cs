@@ -40,6 +40,11 @@
 
                 if (allTimes[i + 1] > end)
                 {
+                    if (allTimes[i + 1].Date > allTimes[i].Date)
+                    {
+                        timeWorked += allTimes[i + 1].Date - allTimes[i];
+                    }
+
                     break;
                 }
 
@@ -58,6 +63,10 @@
         {
             var totalTimeWorked = this.TimeWorked(beginning, end);
             var numberOfDays = (end - beginning).Days;
+            if (numberOfDays == 0)
+            {
+                numberOfDays = 1;
+            }
 
             return new TimeSpan(totalTimeWorked.Ticks / numberOfDays);
         }

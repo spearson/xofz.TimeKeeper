@@ -6,9 +6,9 @@
     {
         public virtual DateTime StartOfWeek()
         {
-            var now = DateTime.Now;
+            var today = DateTime.Today;
             int daysToSubtract;
-            switch (now.DayOfWeek)
+            switch (today.DayOfWeek)
             {
                 case DayOfWeek.Monday:
                     daysToSubtract = 0;
@@ -37,7 +37,7 @@
                     break;
             }
 
-            return now.Date.AddDays(-daysToSubtract);
+            return today.AddDays(-daysToSubtract);
         }
 
         public virtual DateTime Friday()
